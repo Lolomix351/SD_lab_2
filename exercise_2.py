@@ -2,7 +2,7 @@
 
 import numpy as np
 import time
-from scipy.linalg.blas import cgemm
+from scipy.linalg.blas import zgemm
 
 N_SMALL = 200
 N_LARGE = 2048
@@ -42,10 +42,10 @@ def matrix_multiply_formula(A, B):
 
 # BLAS перемножение (cgemm)
 def matrix_multiply_blas(A, B):
-    return cgemm(alpha=1.0, a=A, b=B)
+    return zgemm(alpha=1.0, a=A, b=B)
 
 # Оптимизированное блочное перемножение
-def matrix_multiply_optimized(A, B, block_size=512, use_cgemm=True):
+def matrix_multiply_optimized(A, B, block_size=512, use_zgemm=True):
     n = A.shape[0]
     C = np.zeros((n, n), dtype=np.complex128)
     for i in range(0, n, block_size):
@@ -54,8 +54,8 @@ def matrix_multiply_optimized(A, B, block_size=512, use_cgemm=True):
             j_end = min(j + block_size, n)
             for k in range(0, n, block_size):
                 k_end = min(k + block_size, n)
-                if use_cgemm:
-                    C[i:i_end, j:j_end] += cgemm(
+                if use_zgemm:
+                    C[i:i_end, j:j_end] += zgemm(
                         alpha=1.0,
                         a=A[i:i_end, k:k_end],
                         b=B[k:k_end, j:j_end]
@@ -85,7 +85,7 @@ def main():
     print("\n\n3-Й ВАРИАНТ: ОПТИМИЗИРОВАННЫЙ АЛГОРИТМ")
     print(f"Размер матрицы: {N_LARGE}x{N_LARGE}")
     C_optimized, time_optimized, mflops_optimized = measure_performance(
-        lambda x, y: matrix_multiply_optimized(x, y, block_size=512, use_cgemm=True), A_large, B_large
+        lambda x, y: matrix_multiply_optimized(x, y, block_size=512, use_zgemm=True), A_large, B_large
     )
     print(f"Время выполнения: {time_optimized:.2f} секунд")
     print(f"Производительность: {mflops_optimized:.2f} MFLOPS")
