@@ -1,4 +1,4 @@
-#Выполнил Шакула Дмитрий Андреевич 090301-ПОВа-о24
+# Выполнил Шакула Дмитрий Андреевич 090301-ПОВа-о24
 
 import numpy as np
 import time
@@ -7,7 +7,7 @@ from scipy.linalg.blas import zgemm
 N_SMALL = 200
 N_LARGE = 2048
 
-# Инициализация матриц
+# Инициализация матриц с двойной точностью (complex128)
 np.random.seed(42)
 A_large = np.random.rand(N_LARGE, N_LARGE).astype(np.complex128) + 1j * np.random.rand(N_LARGE, N_LARGE).astype(np.complex128)
 B_large = np.random.rand(N_LARGE, N_LARGE).astype(np.complex128) + 1j * np.random.rand(N_LARGE, N_LARGE).astype(np.complex128)
@@ -26,7 +26,7 @@ def measure_performance(func, *args, iterations=3):
         start_time = time.time()
         result = func(*args)
         elapsed_times.append(time.time() - start_time)
-    elapsed_time = min(elapsed_times)  # Берём лучшее время
+    elapsed_time = min(elapsed_times)
     mflops = complexity_small / (elapsed_time * 1e6) if args[0].shape[0] == N_SMALL else complexity_large / (elapsed_time * 1e6)
     return result, elapsed_time, mflops
 
@@ -44,28 +44,9 @@ def matrix_multiply_formula(A, B):
 def matrix_multiply_blas(A, B):
     return zgemm(alpha=1.0, a=A, b=B)
 
-# Оптимизированное блочное перемножение
-def matrix_multiply_optimized(A, B, block_size=512, use_zgemm=True):
-    n = A.shape[0]
-    C = np.zeros((n, n), dtype=np.complex128)
-    for i in range(0, n, block_size):
-        i_end = min(i + block_size, n)
-        for j in range(0, n, block_size):
-            j_end = min(j + block_size, n)
-            for k in range(0, n, block_size):
-                k_end = min(k + block_size, n)
-                if use_zgemm:
-                    C[i:i_end, j:j_end] += zgemm(
-                        alpha=1.0,
-                        a=A[i:i_end, k:k_end],
-                        b=B[k:k_end, j:j_end]
-                    )
-                else:
-                    C[i:i_end, j:j_end] += np.dot(
-                        A[i:i_end, k:k_end],
-                        B[k:k_end, j:j_end]
-                    )
-    return C
+# Оптимизированное перемножение с использованием np.dot
+def matrix_multiply_optimized(A, B):
+    return np.dot(A, B)
 
 def main():
     print("Работу выполнил: Шакула Дмитрий Андреевич 090301-ПОВа-o24")
@@ -81,15 +62,13 @@ def main():
     print(f"Время выполнения: {time_blas:.2f} секунд")
     print(f"Производительность: {mflops_blas:.2f} MFLOPS")
 
-
-    print("\n\n3-Й ВАРИАНТ: ОПТИМИЗИРОВАННЫЙ АЛГОРИТМ")
+    print("\n\n3-Й ВАРИАНТ: ОПТИМИЗИРОВАННЫЙ АЛГОРИТМ (np.dot)")
     print(f"Размер матрицы: {N_LARGE}x{N_LARGE}")
     C_optimized, time_optimized, mflops_optimized = measure_performance(
-        lambda x, y: matrix_multiply_optimized(x, y, block_size=512, use_zgemm=True), A_large, B_large
+        matrix_multiply_optimized, A_large, B_large
     )
     print(f"Время выполнения: {time_optimized:.2f} секунд")
     print(f"Производительность: {mflops_optimized:.2f} MFLOPS")
-
 
     print("\n\nСРАВНЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ:")
     print(f"1-й вариант (размер {N_SMALL}x{N_SMALL}): {mflops_formula:.2f} MFLOPS")
