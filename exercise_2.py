@@ -33,7 +33,7 @@ def measure_performance(func, *args, iterations=3):
 # Стандартное перемножение (IJK)
 def matrix_multiply_formula(A, B):
     n = A.shape[0]
-    C = np.zeros((n, n), dtype=np.complex64)
+    C = np.zeros((n, n), dtype=np.complex128)
     for i in range(n):
         for j in range(n):
             for k in range(n):
@@ -47,7 +47,7 @@ def matrix_multiply_blas(A, B):
 # Оптимизированное блочное перемножение
 def matrix_multiply_optimized(A, B, block_size=512, use_cgemm=True):
     n = A.shape[0]
-    C = np.zeros((n, n), dtype=np.complex64)
+    C = np.zeros((n, n), dtype=np.complex128)
     for i in range(0, n, block_size):
         i_end = min(i + block_size, n)
         for j in range(0, n, block_size):
