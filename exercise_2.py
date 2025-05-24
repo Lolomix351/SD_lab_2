@@ -9,10 +9,10 @@ N_LARGE = 2048
 
 # Инициализация матриц
 np.random.seed(42)
-A_large = np.random.rand(N_LARGE, N_LARGE).astype(np.complex64) + 1j * np.random.rand(N_LARGE, N_LARGE).astype(np.complex64)
-B_large = np.random.rand(N_LARGE, N_LARGE).astype(np.complex64) + 1j * np.random.rand(N_LARGE, N_LARGE).astype(np.complex64)
-A_small = np.random.rand(N_SMALL, N_SMALL).astype(np.complex64) + 1j * np.random.rand(N_SMALL, N_SMALL).astype(np.complex64)
-B_small = np.random.rand(N_SMALL, N_SMALL).astype(np.complex64) + 1j * np.random.rand(N_SMALL, N_SMALL).astype(np.complex64)
+A_large = np.random.rand(N_LARGE, N_LARGE).astype(np.complex128) + 1j * np.random.rand(N_LARGE, N_LARGE).astype(np.complex128)
+B_large = np.random.rand(N_LARGE, N_LARGE).astype(np.complex128) + 1j * np.random.rand(N_LARGE, N_LARGE).astype(np.complex128)
+A_small = np.random.rand(N_SMALL, N_SMALL).astype(np.complex128) + 1j * np.random.rand(N_SMALL, N_SMALL).astype(np.complex128)
+B_small = np.random.rand(N_SMALL, N_SMALL).astype(np.complex128) + 1j * np.random.rand(N_SMALL, N_SMALL).astype(np.complex128)
 
 # Вычисление сложности
 complexity_small = 2 * N_SMALL**3
